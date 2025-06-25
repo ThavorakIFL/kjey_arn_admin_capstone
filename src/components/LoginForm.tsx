@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import api from "@/lib/api";
+import api from "@/lib/api/api";
 import { useState } from "react";
 import { AdminAuth } from "@/lib/auth";
 import { Button } from "./ui/button";

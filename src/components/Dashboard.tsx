@@ -1,7 +1,7 @@
 "use client";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import ErrorMessage from "./ErrorMessage";
-import LoadingSpinner from "./LoadingSpinner";
+import LoadingSpinner from "./shared/LoadingSpinner";
 import { AdminService } from "@/app/services/adminService";
 import {
     Card,

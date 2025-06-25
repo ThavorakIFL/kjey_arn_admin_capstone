@@ -2,7 +2,7 @@
 
 import BookInformation from "@/components/book/BookInformation";
 import ErrorMessage from "@/components/ErrorMessage";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { useBookById } from "@/hooks/useBookData";
 
 interface BookInformationClientProps {

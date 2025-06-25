@@ -1,8 +1,12 @@
 "use client";
 
-import { useUserById } from "@/hooks/useUserData";
+import {
+    fetchUserBorrowDataById,
+    fetchUserBookById,
+    useUserById,
+} from "@/hooks/useUserData";
 import UserInformation from "@/components/user/UserInformation";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import ErrorMessage from "@/components/ErrorMessage";
 
 interface UserInformationClientProps {
@@ -13,6 +17,8 @@ export default function UserInformationClient({
     userId,
 }: UserInformationClientProps) {
     const { data: user, loading, error } = useUserById(userId);
+    const { data: userBooks } = fetchUserBookById(userId);
+    const { data: userBorrowDatas } = fetchUserBorrowDataById(userId);
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -21,5 +27,11 @@ export default function UserInformationClient({
         return <div>No data available</div>;
     }
 
-    return <UserInformation data={user} />;
+    return (
+        <UserInformation
+            userBorrowDatas={userBorrowDatas || undefined}
+            userBooks={userBooks || undefined}
+            data={user}
+        />
+    );
 }

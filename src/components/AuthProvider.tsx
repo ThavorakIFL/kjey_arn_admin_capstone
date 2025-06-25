@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AdminAuth } from "@/lib/auth";
-import api from "@/lib/api";
+import api from "@/lib/api/api";
 
 interface AuthContextType {
     isAuthenticated: boolean;

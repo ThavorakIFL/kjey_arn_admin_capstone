@@ -1,4 +1,4 @@
-import api from "@/lib/api";
+import api from "@/lib/api/api";
 import { DashboardStats } from "../types/admin";
 
 export class StandardService {
