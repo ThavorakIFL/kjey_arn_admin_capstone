@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
         remotePatterns: [
             {
                 protocol: "http",
-                hostname: "localhost",
+                hostname: "api-kjeyarn.paragoniu.app",
                 port: "8000", // this should match exactly
                 pathname: "/storage/**",
             },
