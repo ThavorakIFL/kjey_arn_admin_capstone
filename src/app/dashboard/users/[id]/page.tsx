@@ -28,6 +28,7 @@ import {
     fetchUserBooksbyId,
     fetchUserBorrowActivitiesbyId,
     fetchUserbyId,
+    updateUserStatus,
 } from "@/lib/api/users";
 import BookFilters from "../../books/components/BookFilters";
 import Pagination from "@/components/shared/Pagination";
@@ -200,11 +201,10 @@ export default function UserDetailPage({}) {
 
     const handleUserStatusUpdate = async (newStatus: number) => {
         try {
-            // await updateUserStatus(userId, newStatus);
-            console.log("Update user status:", newStatus);
-            fetchUserData(); // Refresh data
+            await updateUserStatus(user!.id!, newStatus);
+            window.location.reload(); // Quick fix, or better: update local state
         } catch (error) {
-            console.error("Error updating user status:", error);
+            console.error("Failed to update status:", error);
         }
     };
 
