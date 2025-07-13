@@ -91,16 +91,6 @@ export default function UserProfileCard({
                                     </>
                                 )}
                             </button>
-                            <button
-                                onClick={() => {
-                                    console.log("Edit user");
-                                    setOpenDropdown(false);
-                                }}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center"
-                            >
-                                <Edit className="w-4 h-4 mr-2 text-blue-500" />
-                                Edit Profile
-                            </button>
                         </div>
                     )}
                 </div>
