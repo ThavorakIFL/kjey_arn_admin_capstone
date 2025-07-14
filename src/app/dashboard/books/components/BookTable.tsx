@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Book, BookAvailability, Genre } from "@/app/types/admin";
 import { updateBookStatus } from "@/lib/api/books";
+import { toast } from "sonner";
 
 interface BookTableProps {
     books: Book[];
@@ -19,15 +20,59 @@ interface BookTableProps {
 
 export default function BookTable({ books, onBookClick }: BookTableProps) {
     const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+    const [updatingStatus, setUpdatingStatus] = useState(false);
     const router = useRouter();
+    // const handleStatusUpdate = async (book: Book, newStatus: number) => {
+    //     try {
+    //         await updateBookStatus(book.id!, newStatus);
+    //         window.location.reload(); // Quick fix, or better: update local state
+    //     } catch (error) {
+    //         console.error("Failed to update book status:", error);
+    //     }
+    //     setOpenDropdown(null);
+    // };
+
     const handleStatusUpdate = async (book: Book, newStatus: number) => {
+        if (!book.id) return;
+
+        setUpdatingStatus(true);
+
         try {
-            await updateBookStatus(book.id!, newStatus);
+            await updateBookStatus(book.id, newStatus);
+
+            // Success toast
+            toast.success(
+                newStatus === 1
+                    ? "Book has been unsuspended successfully"
+                    : "Book has been suspended successfully"
+            );
+
             window.location.reload(); // Quick fix, or better: update local state
-        } catch (error) {
+        } catch (error: any) {
             console.error("Failed to update book status:", error);
+
+            // Handle different types of errors
+            if (error.response?.status === 422) {
+                // Validation error - book has active borrow events
+                const errorMessage =
+                    error.response.data?.message ||
+                    "Cannot suspend this book because it is currently being borrowed or has active borrow requests.";
+
+                toast.error("Cannot Suspend Book", {
+                    description: errorMessage,
+                    duration: 5000, // Show longer for important errors
+                });
+            } else if (error.response?.status === 404) {
+                toast.error("Book not found");
+            } else if (error.response?.status >= 500) {
+                toast.error("Server error occurred. Please try again later.");
+            } else {
+                toast.error("Failed to update book status. Please try again.");
+            }
+        } finally {
+            setUpdatingStatus(false);
+            setOpenDropdown(null);
         }
-        setOpenDropdown(null);
     };
 
     const getAvailabilityBadge = (availability?: BookAvailability) => {
@@ -297,7 +342,7 @@ export default function BookTable({ books, onBookClick }: BookTableProps) {
                                             </button>
                                             {openDropdown === book.id && (
                                                 <div className="absolute right-0 mt-1 w-36 bg-white rounded-md shadow-lg border z-60 flex flex-col">
-                                                    <button
+                                                    {/* <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleStatusUpdate(
@@ -313,6 +358,39 @@ export default function BookTable({ books, onBookClick }: BookTableProps) {
                                                         {book.status === 1
                                                             ? "Suspend Book"
                                                             : "Unsuspend Book"}
+                                                    </button> */}
+                                                    <button
+                                                        onClick={() =>
+                                                            handleStatusUpdate(
+                                                                book,
+                                                                book.status ===
+                                                                    1
+                                                                    ? 0
+                                                                    : 1
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            updatingStatus
+                                                        }
+                                                        className="cursor-pointer w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        {book.status === 1 ? (
+                                                            <>
+                                                                <p className="font-medium">
+                                                                    {updatingStatus
+                                                                        ? "Suspending..."
+                                                                        : "Suspend Book"}
+                                                                </p>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <p className="font-medium">
+                                                                    {updatingStatus
+                                                                        ? "Unsuspending..."
+                                                                        : "Unsuspend Book"}
+                                                                </p>
+                                                            </>
+                                                        )}
                                                     </button>
                                                 </div>
                                             )}
